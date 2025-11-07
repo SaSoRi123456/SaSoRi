@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Personal Info — Interactive Card</title>
+  <style>
+    :root{
+      --bg:#0f111a; --card:#141826; --accent:#0ff; --accent2:#00f6ff;
+      --text:#e6eef6; --muted:#94a3b8; --radius:14px; --maxw:900px;
+      font-family:'Poppins',system-ui,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;
+      background:linear-gradient(135deg,#0a0f1f,#10162b 60%,#091230);
+      color:var(--text);
+      display:flex;align-items:center;justify-content:center;
+      padding:28px;transition:all .4s ease;
+    }
+    .wrap{width:100%;max-width:var(--maxw)}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;color:#07102a;box-shadow:0 0 20px rgba(0,255,255,0.4)}
+    .title{font-size:1.1rem;font-weight:700}
+    .subtitle{font-size:.8rem;color:var(--muted)}
+    .burger{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid rgba(255,255,255,0.1)}
+    .burger .lines{width:20px;height:14px;position:relative}
+    .lines span{display:block;height:2px;background:var(--text);margin:3px 0;border-radius:2px;transition:all .25s ease}
+    .burger.open .lines span:nth-child(1){transform:translateY(5px) rotate(45deg)}
+    .burger.open .lines span:nth-child(2){opacity:0}
+    .burger.open .lines span:nth-child(3){transform:translateY(-5px) rotate(-45deg)}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02));border-radius:var(--radius);padding:18px;border:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:1fr 2fr;gap:18px;align-items:start;box-shadow:0 0 25px rgba(0,255,255,0.05)}
+    .profile{display:flex;flex-direction:column;gap:12px;align-items:center}
+    .avatar{width:120px;height:120px;border-radius:14px;background:linear-gradient(180deg,#0f172a,#1e293b);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;color:var(--accent);border:2px solid rgba(0,255,255,0.2);overflow:hidden}
+    .avatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+    .quick{text-align:center}
+    .name{font-weight:700;font-size:1.2rem}
+    .role{color:var(--muted);font-size:.9rem}
+    .details{display:flex;flex-direction:column;gap:12px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .info{flex:1;padding:12px;border-radius:10px;background:var(--card);border:1px solid rgba(255,255,255,0.05)}
+    .info h4{margin:0 0 6px 0;color:var(--accent)}
+    .info p{margin:0;color:var(--muted);font-size:.95rem}
+    .controls{display:flex;gap:10px;align-items:center}
+    .btn{padding:8px 14px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.2);cursor:pointer;color:var(--text);transition:all .3s ease}
+    .btn.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#07102a;border:none;box-shadow:0 0 10px rgba(0,255,255,0.5)}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#07102a;border:none}
+    .icon-btn{border:none;background:none;cursor:pointer;font-size:1.3rem;color:var(--text)}
+    .vertical .card{grid-template-columns:1fr}
+    .horizontal .card{grid-template-columns:1fr 2fr}
+    @media (max-width:720px){.card{grid-template-columns:1fr;} .brand .subtitle{display:none}}
+    .nav{position:fixed;top:16px;right:16px;background:rgba(2,6,23,0.95);backdrop-filter:blur(10px);padding:12px 14px;border-radius:12px;box-shadow:0 8px 30px rgba(0,255,255,0.2);transform:translateY(-10px) scale(.98);opacity:0;pointer-events:none;transition:all .22s ease}
+    .nav.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto}
+    .nav a{display:block;padding:8px 12px;color:var(--text);text-decoration:none;border-radius:8px;transition:0.2s}
+    .nav a:hover{background:rgba(0,255,255,0.08)}
+    section.page{display:none;margin-top:20px;padding:16px;border-radius:12px;background:rgba(255,255,255,0.03)}
+    section.page.active{display:block}
+    /* Light theme */
+    body.light { --bg:#f4f7fb; --card:#ffffff; --text:#0f172a; --muted:#475569; background:linear-gradient(135deg,#e5f0ff,#f8fbff); }
+  </style>
+</head>
+<body class="horizontal">
+  <div class="wrap">
+    <header>
+       <div class="brand">
+  <div class="logo" style="width:80px; height:80px;">
+    <img src="https://logopng.com.br/logos/akatsuki-148.png"alt="Logo" style="width:100%; height:100%;object-fit:cover; border-radius:10px;">
+  </div>
+  <div>
+    <div class="title">Roel C. Rabara Jr.</div>
+    <div class="subtitle">Hello</div>
+  </div>
+</div>
+     <div style="display:flex;gap:12px;align-items:center">
+        <div class="controls">
+          <button class="btn active" id="btn-horizontal">Horizontal</button>
+          <button class="btn" id="btn-vertical">Vertical</button>
+        </div>
+
+        <button id="themeToggle" class="icon-btn" title="Toggle light/dark">🌙</button>
+
+        <div class="burger" id="burger" aria-label="menu" role="button">
+          <div class="lines"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <article class="card active" id="profile-card">
+        <section class="profile">
+          <div class="avatar" id="avatar">
+          <img src="https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2F2.bp.blogspot.com%2F-nQcJ_LAkjdY%2FVrWkGozO6UI%2FAAAAAAAAAh4%2FPeS_74cLC1c%2Fs1600%2FSasori%25252C_de_Rudy.jpg&sp=1762426485Tc6c4be8ebbb087f81c58693e0d477f77e4c7515208dfb7195f75ae5ff26477dc" alt="Profile" style="width:100%;height:100%;border-radius:14px;object-fit:cover;">
+</div>
+          <div class="quick">
+            <div class="name" id="nameText">Roel C. Rabara Jr.</div>
+            <div class="role">Student / Web Developer</div>
+            <div class="muted" style="margin-top:8px">Villasis Pangasinan, Philippines</div>
+          </div>
+        </section>
+
+        <section class="details">
+          <div class="row">
+            <div class="info">
+              <h4>Contact</h4>
+              <p id="contactText">Email: roelrabara47@gmail.com<br>Phone: +63 928 303 3524</p>
+            </div>
+            <div class="info">
+              <h4>Social</h4>
+              <p>
+                <a href="https://open.spotify.com/" target="_blank">Spotify</a><br>
+                <a href="https://www.youtube.com/" target="_blank">YouTube</a><br>
+                <a href="https://store.steampowered.com/about/" target="_blank">Steam</a>
+              </p>
+            </div>
+          </div>
+
+          <div class="info">
+            <h4>About</h4>
+            <p id="aboutText">Passionate about building interactive, modern web applications using front-end and back-end technologies. Enthusiastic about design systems, networking, and AI-driven tools.</p>
+          </div>
+
+          <div class="row">
+            <div class="info">
+              <h4>Skills</h4>
+              <p>HTML • CSS • JavaScript • Python • SQL • HTML</p>
+            </div>
+            <div class="info">
+              <h4>Education</h4>
+              <p>Bachelor's of Science in Information Technology (in progress)</p>
+            </div>
+          </div>
+        </section>
+      </article>
+
+      <section class="page" id="about">
+        <h3>About Me</h3>
+        <p>I'm Roel C. Rabara Jr., a student passionate about web development and network systems. My goal is to master both front-end and back-end technologies and build user-centered, dynamic web solutions.</p>
+      </section>
+
+      <section id="edit" class="page">
+        <h3>Edit Profile</h3>
+        <form id="editForm" style="display:grid;gap:8px;max-width:560px">
+          <label>Full name
+            <input id="inpName" type="text" value="Roel C. Rabara Jr.">
+          </label>
+          <label>Email
+            <input id="inpEmail" type="email" value="roel@example.com">
+          </label>
+          <label>Phone
+            <input id="inpPhone" type="text" value="+63 912 345 6789">
+          </label>
+          <label>Profile Photo
+            <input id="inpAvatar" type="file" accept="image/*">
+          </label>
+          <label>About
+            <textarea id="inpAbout" rows="4">Passionate about building interactive, modern web applications using front-end and back-end technologies.</textarea>
+          </label>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button type="button" class="btn" id="cancelEdit">Cancel</button>
+            <button type="submit" class="btn primary">Save</button>
+          </div>
+        </form>
+      </section>
+
+      <nav class="nav" id="nav">
+        <a href="#" data-page="profile-card">View Profile</a>
+        <a href="#" data-page="edit">Edit Profile</a>
+        <a href="#" data-page="about">About</a>
+        <!-- give logout an id so we can handle it explicitly -->
+        <a href="#" id="logout" data-page="logout">Sign Out</a>
+      </nav>
+    </main>
+  </div>
+
+  <script>
+    const body = document.body;
+    const btnH = document.getElementById('btn-horizontal');
+    const btnV = document.getElementById('btn-vertical');
+    const burger = document.getElementById('burger');
+    const nav = document.getElementById('nav');
+    const pages = document.querySelectorAll('section.page, article.card');
+    const themeToggle = document.getElementById('themeToggle');
+
+    // Layout buttons
+    btnH.onclick = ()=>{body.classList.remove('vertical');body.classList.add('horizontal');btnH.classList.add('active');btnV.classList.remove('active');};
+    btnV.onclick = ()=>{body.classList.remove('horizontal');body.classList.add('vertical');btnV.classList.add('active');btnH.classList.remove('active');};
+
+    // Burger menu
+    burger.onclick = ()=>{burger.classList.toggle('open');nav.classList.toggle('open');};
+    document.addEventListener('click',(e)=>{if(!nav.contains(e.target)&&!burger.contains(e.target)){nav.classList.remove('open');burger.classList.remove('open');}});
+
+    // Generic navigation for pages
+    nav.querySelectorAll('a').forEach(link=>{
+      // skip handling logout here (we'll attach a dedicated handler below)
+      if (link.id === 'logout') return;
+      link.addEventListener('click',e=>{
+        e.preventDefault();
+        const id = link.dataset.page;
+        pages.forEach(p=>p.classList.remove('active'));
+        const target = document.getElementById(id);
+        if(target) target.classList.add('active');
+        nav.classList.remove('open'); burger.classList.remove('open');
+      });
+    });
+
+    // Explicit logout handler
+    const logoutLink = document.getElementById('logout');
+    logoutLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      // Clear profile data and theme (customize as needed)
+      localStorage.removeItem('profileData');
+      localStorage.removeItem('theme');
+      // Optional: show confirmation
+      alert('Signed out — profile data cleared.');
+      // Reload to reset UI to defaults (or instead navigate to login)
+      location.reload();
+    });
+
+    // Edit profile
+    const form=document.getElementById('editForm');
+    const nameText=document.getElementById('nameText');
+    const contactText=document.getElementById('contactText');
+    const aboutText=document.getElementById('aboutText');
+    const avatar=document.getElementById('avatar');
+    const cancelEdit=document.getElementById('cancelEdit');
+
+    // Load saved profile data if present
+    let currentData = JSON.parse(localStorage.getItem('profileData')) || {
+      name: 'Roel C. Rabara Jr.',
+      email: 'roel@example.com',
+      phone: '+63 912 345 6789',
+      about: 'Passionate about building interactive, modern web applications using front-end and back-end technologies.',
+      avatar: null
+    };
+
+    // render
+    function renderProfile(){
+      nameText.textContent = currentData.name;
+      contactText.innerHTML = `Email: ${currentData.email}<br>Phone: ${currentData.phone}`;
+      aboutText.textContent = currentData.about;
+      avatar.innerHTML = currentData.avatar ? `<img src="${currentData.avatar}" alt="Avatar">` : 'RC';
+    }
+    renderProfile();
+
+    form.addEventListener('submit',e=>{
+      e.preventDefault();
+      const name=inpName.value.trim();
+      const email=inpEmail.value.trim();
+      const phone=inpPhone.value.trim();
+      const about=inpAbout.value.trim();
+
+      currentData.name = name || currentData.name;
+      currentData.email = email || currentData.email;
+      currentData.phone = phone || currentData.phone;
+      currentData.about = about || currentData.about;
+
+      localStorage.setItem('profileData', JSON.stringify(currentData));
+      renderProfile();
+
+      // go back to profile view
+      pages.forEach(p=>p.classList.remove('active'));
+      document.getElementById('profile-card').classList.add('active');
+    });
+
+    cancelEdit.onclick=()=>{
+      // simply return to profile without saving
+      pages.forEach(p=>p.classList.remove('active'));
+      document.getElementById('profile-card').classList.add('active');
+    };
+
+    document.getElementById('inpAvatar').onchange=(e)=>{
+      const file=e.target.files[0];
+      if(file){
+        const reader=new FileReader();
+        reader.onload=()=>{
+          currentData.avatar = reader.result;
+          avatar.innerHTML = `<img src="${reader.result}" alt="Avatar">`;
+          localStorage.setItem('profileData', JSON.stringify(currentData));
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    // Theme toggle (persisted)
+    const savedTheme = localStorage.getItem('theme');
+    if(savedTheme === 'light'){ body.classList.add('light'); themeToggle.textContent='🌞'; }
+    themeToggle.onclick = ()=>{
+      body.classList.toggle('light');
+      const isLight = body.classList.contains('light');
+      themeToggle.textContent = isLight ? '🌞' : '🌙';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    };
+  </script>
+</body>
+</html> 
